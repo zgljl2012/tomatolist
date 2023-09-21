@@ -1,12 +1,14 @@
 import "./App.css";
 import { Timer, TimerBoard } from "./Timer";
+import { TodoList } from "./TodoList";
 
 function App() {
   return (
-    <div className="w-screen h-screen bg-slate-900 flex justify-center items-center">
-      <div>
-        <TimerBoard />
-      </div>
+    <div className="w-screen h-screen bg-slate-900 flex flex-col justify-center items-center gap-4">
+      {/** Timer */}
+      <TimerBoard />
+      {/** TODO List */}
+      <TodoList />
     </div>
   );
 }
