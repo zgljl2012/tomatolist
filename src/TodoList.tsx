@@ -5,9 +5,25 @@ export interface Todo {
     finished?: boolean;
 }
 
-function TodoComp({ todo, onDelete }: { todo: Todo, onDelete?: () => void }) {
+function TodoComp({ todo, onDelete, onUpdate }: { todo: Todo, onDelete?: () => void, onUpdate?: (title: string) => void }) {
+    const [editable, setEditable] = useState(false)
     return <div className="flex flex-row justify-between items-center w-full">
-        <div>{todo.title}</div>
+        <div onKeyDown={e => {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+                e.stopPropagation()
+                e.currentTarget.blur()
+                setEditable(false)
+                const text = (e.target as any).innerHTML
+                if (text && text !== '<br>') {
+                    onUpdate && onUpdate(text)
+                } else if (!text || text === '<br>') {
+                    onDelete && onDelete()
+                }
+            }
+        }} contentEditable={editable} onDoubleClick={() => {
+            setEditable(true)
+        }}>{todo.title}</div>
         <div>
             <button onClick={() => {
                 onDelete && onDelete()
@@ -32,7 +48,17 @@ export function TodoList() {
         {/** Todos */}
         {todos.map((todo, i) => <div className="text-white flex flex-row justify-between" key={i}>
             {/** Todo */}
-            <TodoComp todo={todo} onDelete={() => {
+            <TodoComp todo={todo} onUpdate={(title) => {
+                console.log(title)
+                setTodos(() => {
+                    return todos.map((todo, j) => {
+                        if (i === j) {
+                            return {...todo, title}
+                        }
+                        return todo
+                    })
+                })
+            }} onDelete={() => {
                 setTodos(() => {
                     return todos.filter((_, j) => i !== j)
                 })
