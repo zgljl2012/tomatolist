@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { ReactNode, useEffect, useState } from "react"
+import "./timer.css"
 
 function padding_zero(val: number) {
     if (val >= 10) {
@@ -11,13 +12,15 @@ function padding_zero(val: number) {
 export function Timer({ interval, className }: { interval: number, className?: string  }) {
     const minutes = Math.floor(interval / 60)
     const seconds = interval - minutes * 60
-    return <div className={"flex flex-row justify-center items-center gap-1 text-2xl w-[12rem] h-[12rem] rounded-full border border-slate-50 " + className}>
-        <div className="flex flex-row justify-center items-end gap-1">
-            {/** Minutes */}
-            <div className="text-4xl">{padding_zero(minutes)}</div>
-            <div>:</div>
-            {/** Seconds */}
-            <div>{padding_zero(seconds)}</div>
+    return <div className={"flex flex-row justify-center items-center gap-1 text-2xl w-[12rem] h-[12rem] rounded-full border-0 border-slate-50 " + className}>
+        <div className="w-full h-full relative border-4 border-slate-400 top-0 left-0 flex flex-row justify-center items-center rounded-full">
+            <div className="flex flex-row justify-center items-end gap-1 z-50">
+                {/** Minutes */}
+                <div className="text-4xl">{padding_zero(minutes)}</div>
+                <div>:</div>
+                {/** Seconds */}
+                <div>{padding_zero(seconds)}</div>
+            </div>
         </div>
     </div>
 }
@@ -29,7 +32,7 @@ function Button({ children, onClick, className } : { children: ReactNode, onClic
 }
 
 export function TimerBoard() {
-    const tomato_time = 10
+    const tomato_time = 25 * 60
     const [seconds, setSeconds] = useState(tomato_time)
     const [status, setStatus] = useState<'running' | 'timeout' | 'stopped'>('stopped')
     const [colorsMapping] = useState({
@@ -53,6 +56,15 @@ export function TimerBoard() {
         }
     }, [seconds, status])
     return <div className="flex flex-col gap-4 items-center">
+        {/* <div className="circle_process">
+            <div className="wrapper right">
+                <div className="circle rightcircle"></div>
+            </div>
+            <div className="show">Hello</div>
+            <div className="wrapper left">
+                <div className="circle leftcircle" id="leftcircle"></div>
+            </div>
+        </div> */}
         {/** 时钟 */}
         <Timer interval={seconds} className={colorsMapping[status]} />
         {/** Buttons */}
