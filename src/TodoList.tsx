@@ -1,7 +1,9 @@
+import { invoke } from "@tauri-apps/api";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Todo {
+    id: string,
     title: string;
     finished?: boolean;
 }
@@ -11,7 +13,7 @@ function TodoComp({ todo, onDelete, onUpdate, onSelected }: { todo: Todo, onDele
     return <div className="group text-white hover:bg-slate-500 py-1 px-1 rounded-lg flex flex-row justify-between items-center w-full">
         <div className="flex flex-row gap-2 items-center">
             {/** Checkbox */}
-            <input checked={todo.finished} onClick={() => {
+            <input checked={todo.finished} onChange={() => {
               onSelected && onSelected()
             }} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" />
             {/** title */}
@@ -43,14 +45,26 @@ function TodoComp({ todo, onDelete, onUpdate, onSelected }: { todo: Todo, onDele
 export function TodoList() {
     const [todos, setTodos] = useState<Todo[]>([])
     const [val, setVal] = useState<string>('')
+    useEffect(() => {
+      invoke('load_todos').then((values) => {
+        console.log(values)
+        setTodos(values as any)
+      }).catch(err => {
+        console.error(err)
+      })
+    }, [val])
     return <div className="flex flex-col gap-2 rounded-md bg-slate-400/50 px-4 py-2 w-1/3 overflow-scroll">
         {/** Buttons */}
         <div className="flex flex-row justify-end border-b pb-2 border-slate-100/20">
             {/** 只有使用输入法才能解决输入法 Enter 的问题 */}
             <form onSubmit={(e) => {
                 if (val.trim()) {
-                    setTodos([...todos, { title: val, finished: false }])
-                    setVal(() => '')
+                    invoke("add_todo", { title: val }).then((id: any) => {
+                      setTodos([...todos, { id, title: val, finished: false }])
+                      setVal(() => '')
+                    }).catch(err => {
+                      console.error(err)
+                    })
                 }
                 e.preventDefault()
                 e.stopPropagation()
