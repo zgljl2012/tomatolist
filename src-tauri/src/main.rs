@@ -6,7 +6,7 @@ use std::sync::Mutex;
 use rusty_leveldb::DB;
 use state::{AppState, InnerAppState};
 
-use crate::todo::{load_todos, add_todo};
+use crate::todo::{load_todos, add_todo, update_todo, delete_todo};
 
 mod todo;
 mod state;
@@ -25,7 +25,7 @@ fn main() {
     }));
     tauri::Builder::default()
         .manage(state)
-        .invoke_handler(tauri::generate_handler![greet, load_todos, add_todo])
+        .invoke_handler(tauri::generate_handler![greet, load_todos, add_todo, update_todo, delete_todo])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

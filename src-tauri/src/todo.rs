@@ -79,6 +79,18 @@ pub fn add_todo(state: tauri::State<AppState>, title: String) -> String {
     return todo.id.to_string()
 }
 
+#[tauri::command]
+pub fn update_todo(state: tauri::State<AppState>, todo: Todo) {
+    let mut s = state.inner().0.lock().unwrap();
+    todo.update(&mut s.db);
+}
+
+#[tauri::command]
+pub fn delete_todo(state: tauri::State<AppState>, id: String) {
+    let mut s = state.inner().0.lock().unwrap();
+    Todo::remove(&mut s.db, id);
+}
+
 #[cfg(test)]
 mod tests {
     use rusty_leveldb::DB;
