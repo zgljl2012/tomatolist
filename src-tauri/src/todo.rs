@@ -67,14 +67,14 @@ impl Todo {
 #[tauri::command]
 pub fn load_todos(state: tauri::State<AppState>) -> Vec<Todo> {
     let mut s = state.inner().0.lock().unwrap();
-    let todos = Todo::load_todos(&mut s.db);
+    let todos: Vec<Todo> = Todo::load_todos(&mut s.db).iter().filter(|t|t.is_current_term).map(|t|t.clone()).collect();
     todos
 }
 
 #[tauri::command]
 pub fn add_todo(state: tauri::State<AppState>, title: String) -> String {
     let mut s = state.inner().0.lock().unwrap();
-    let todo = Todo::new(None, title.clone(), false, false);
+    let todo = Todo::new(None, title.clone(), false, true);
     todo.add(&mut s.db);
     return todo.id.to_string()
 }

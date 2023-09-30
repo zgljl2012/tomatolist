@@ -15,6 +15,12 @@ export async function updateTodo(todo: Todo) {
   await invoke("update_todo", { todo })
 }
 
+export async function finishedTodos(...todos: Todo[]) {
+  for (const todo of todos) {
+    await updateTodo({ ...todo, finished: true, is_current_term: false})
+  }
+}
+
 export async function deleteTodo(id: string) {
   await invoke("delete_todo", { id })
 }

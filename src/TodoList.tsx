@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { useEffect, useState } from "react";
-import { addTodo, deleteTodo, listTodos, updateTodo } from "./services/todo";
+import { useState } from "react";
+import { addTodo, deleteTodo, updateTodo } from "./services/todo";
+import { useTodos } from "./hooks/todo";
 
 export interface Todo {
   id: string;
@@ -77,20 +78,9 @@ function TodoComp({
 }
 
 export function TodoList() {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const { todos, reload } = useTodos()
   const [val, setVal] = useState<string>("");
-  function reload() {
-    listTodos()
-      .then((values) => {
-        setTodos(values);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-  useEffect(() => {
-    reload()
-  }, []);
+  
   return (
     <div className="flex flex-col gap-2 rounded-md bg-slate-400/50 px-4 py-2 w-1/3 overflow-scroll">
       {/** Buttons */}
@@ -100,9 +90,9 @@ export function TodoList() {
           onSubmit={(e) => {
             if (val.trim()) {
               addTodo(val)
-                .then((id) => {
-                  setTodos([...todos, { id, title: val, finished: false, is_current_term: true }]);
+                .then(() => {
                   setVal(() => "");
+                  reload()
                 })
                 .catch((err) => {
                   console.error(err);
@@ -165,14 +155,11 @@ export function TodoList() {
               <TodoComp
                 key={i}
                 onSelected={() => {
-                  setTodos(() => {
-                    return todos.map((todo, j) => {
-                      if (i === j) {
-                        return { ...todo, finished: false };
-                      }
-                      return todo;
-                    });
-                  });
+                  updateTodo({ ...todo, finished: false}).then(() => {
+                    reload()
+                  }).catch(err => {
+                    console.error(err)
+                  })
                 }}
                 todo={todo}
               />
