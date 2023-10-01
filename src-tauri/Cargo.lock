@@ -300,8 +300,10 @@ checksum = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-targets",
 ]
 
@@ -2936,6 +2938,7 @@ dependencies = [
 name = "tomatolist"
 version = "0.0.0"
 dependencies = [
+ "chrono",
  "rusty-leveldb",
  "serde",
  "serde_json",
