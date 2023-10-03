@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api";
 
 export interface Tomato {
-  start_at: number;
-  end_at: number;
+  start_at: string;
+  end_at: string;
   task: string
 }
 

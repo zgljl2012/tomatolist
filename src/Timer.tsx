@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ReactNode, useEffect, useState } from "react";
 import "./timer.css";
 import { FinishedConfirmModal } from "./ConfirmModal";
+import { useTomatoStart } from "./hooks/start_at";
 
 function padding_zero(val: number) {
   if (val >= 10) {
@@ -85,6 +86,7 @@ export function TimerBoard() {
       }, 1000);
     }
   }, [seconds, status]);
+  const { tomatoStart, tomatoClear } = useTomatoStart()
   return (
     <div className="flex flex-col gap-4 items-center">
       {/** 时钟 */}
@@ -95,6 +97,7 @@ export function TimerBoard() {
           <Button
             onClick={() => {
               setStatus("running");
+              tomatoStart()
             }}
             className="bg-red-500"
           >
@@ -105,6 +108,7 @@ export function TimerBoard() {
           <Button
             onClick={() => {
               setStatus("stopped");
+              tomatoClear()
             }}
             className="bg-red-500"
           >
@@ -124,6 +128,7 @@ export function TimerBoard() {
       </div>
       <FinishedConfirmModal active={finishedModal} setActive={setFinishedModal} onConfirmed={() => {
         setStatus("stopped");
+        tomatoClear()
       }} />
     </div>
   );

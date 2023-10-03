@@ -10,7 +10,7 @@ function App() {
       <div className="w-screen h-screen overflow-hidden bg-slate-900 flex flex-col justify-center items-center gap-4">
         {/** Timer */}
         <TimerBoard />
-        <div className="flex flex-row gap-2 w-full justify-center">
+        <div className="flex flex-row gap-2 w-full justify-center overflow-scroll">
           {/** TODO List */}
           <TodoList />
           {/** Tomatos */}

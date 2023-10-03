@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { Todo } from "./TodoList";
 import { finishedTodos } from "./services/todo";
 import { createTomato } from "./services/tomato";
+import { useTomatos } from "./hooks/tomatos";
+import { useTomatoStart } from "./hooks/start_at";
 
 export function FinishedConfirmModal({ active, setActive, onConfirmed }: { active: boolean; setActive: (v: boolean) => void, onConfirmed?: () => void}) {
   const { todos, reload } = useTodos()
+  const { reload: reloadTomatos } = useTomatos()
   const [unfinished, setUnfinished] = useState<Todo[]>([])
   const [task, setTask] = useState('')
   useEffect(() => {
@@ -17,6 +20,7 @@ export function FinishedConfirmModal({ active, setActive, onConfirmed }: { activ
   useEffect(() => {
     setTask(unfinished.map(u => u.title).join(' + '))
   }, [unfinished])
+  const { startAt } = useTomatoStart()
   return <Modal active={active} setActive={setActive}>
     <div className="bg-slate-950 flex flex-col gap-4 rounded-xl shadow-lg text-slate-50 p-4">
       {/** Task */}
@@ -33,13 +37,13 @@ export function FinishedConfirmModal({ active, setActive, onConfirmed }: { activ
       <form onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
-        const start_at = new Date().getTime() / 1000
         const end_at = new Date().getTime() / 1000
-        createTomato(start_at, end_at, task).then(() => {
+        createTomato(startAt, end_at, task).then(() => {
           return finishedTodos(...unfinished)
         }).then(() => {
           setActive(false)
           reload()
+          reloadTomatos()
           onConfirmed && onConfirmed()
         }).catch(err => {
           console.error(err)

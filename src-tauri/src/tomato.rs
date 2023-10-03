@@ -52,7 +52,9 @@ impl Tomato {
             count -= 1;
             match db.get(key.as_bytes()) {
                 Some(r) => {
-                    let arr: Vec<Tomato> = serde_json::from_slice(&r).unwrap();
+                    let mut arr: Vec<Tomato> = serde_json::from_slice(&r).unwrap();
+                    // reverse
+                    arr.reverse();
                     tomatos.push(TomatosPerDay { day, tomatos: arr })
                 },
                 None => {},
