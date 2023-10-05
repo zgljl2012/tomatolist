@@ -60,7 +60,7 @@ function Button({
 }
 
 export function TimerBoard() {
-  const tomato_time = 3 //25 * 60;
+  const tomato_time = 25 * 60;
   const [seconds, setSeconds] = useState(tomato_time);
   const [status, setStatus] = useState<"running" | "timeout" | "stopped">(
     "stopped"
