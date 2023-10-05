@@ -8,10 +8,17 @@
   },
   "package": {
     "productName": "tomatolist",
-    "version": "0.0.0"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
+      "fs": {
+        "all": true,
+        "scope": ["$APP/*", "$DESKTOP/*"]
+      },
+      "path": {
+        "all": true
+      },
       "all": false,
       "shell": {
         "all": false,
@@ -21,7 +28,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.zgljl2012.tomatolist",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

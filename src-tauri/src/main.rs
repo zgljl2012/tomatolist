@@ -5,6 +5,7 @@ use std::sync::Mutex;
 
 use rusty_leveldb::DB;
 use state::{AppState, InnerAppState};
+use tauri::{api::path::app_data_dir, Config};
 
 use crate::{
     todo::{add_todo, delete_todo, load_todos, update_todo},
@@ -22,11 +23,16 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
+    let identifier = "com.zgljl2012.tomatolist";
+    let mut cfg = Config::default();
+    cfg.tauri.bundle.identifier = identifier.to_string();
+    // Mac: ~/Library/Application\ Support/com.zgljl2012.tomatolist
+    let path = app_data_dir(&cfg).unwrap();
     let opt = rusty_leveldb::Options::default();
-    let db = DB::open("data", opt).unwrap();
+    let db = DB::open(path, opt).unwrap();
     let state = AppState(Mutex::new(InnerAppState { db }));
-    tauri::Builder::default()
-        .manage(state)
+    
+    tauri::Builder::default().manage(state)
         .invoke_handler(tauri::generate_handler![
             greet,
             load_todos,
